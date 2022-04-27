@@ -1,0 +1,43 @@
+body {
+    background: #f5f5f5;
+  }
+
+  .card-img-tiles {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: relative;
+    background-color: #fff;
+    z-index: 5;
+    justify-content: center;
+  }
+
+  .card-img-tiles .main-img > img,
+  .card-img-tiles .thumblist > img {
+    display: block;
+    width: 100%;
+  }
+
+  .card-img-tiles .main-img {
+    width: 67%;
+    padding-right: 0.375rem;
+    justify-content: center;
+  }
+
+  .card-img-tiles .thumblist {
+    width: 33%;
+    padding-left: 0.375rem;
+  }
+
+  .card-img-tiles .thumblist > img {
+    margin-bottom: 0.75rem;
+  }
+
+  .card-img-tiles .thumblist > img:last-child {
+    margin-bottom: 0;
+  }
+
+  .mb-grid-gutter {
+    margin-bottom: 30px !important;
+  }
+input {max-width: 20em};
