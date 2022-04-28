@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
 
 
 def password_check(passwd):
@@ -20,14 +21,13 @@ def password_check(passwd):
         )
 
 
-class User(models.Model):
+class User(AbstractBaseUser):
     name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=64, validators=[password_check])
     creation_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to="user_images", null=True, blank=True)
-
+    USERNAME_FIELD = 'email'
     def __str__(self):
         return self.name
 
