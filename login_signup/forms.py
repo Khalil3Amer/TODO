@@ -36,13 +36,14 @@ class UserSignUpForm(forms.ModelForm):
         model = User
         fields = ["name", "email", "password"]
 
+
 class UserLoginForm(forms.Form):
-    email=forms.EmailField(help_text="john_doe@example.com")
+    email = forms.EmailField(help_text="john_doe@example.com")
     password = forms.CharField(
         widget=forms.PasswordInput,
         help_text="your password",
     )
+
     class Meta:
         model = User
         fields = ["email", "password"]
-        

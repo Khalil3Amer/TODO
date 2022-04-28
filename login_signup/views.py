@@ -1,16 +1,18 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.contrib.auth.hashers import check_password, make_password
 from django.http import HttpRequest
-from .forms import UserSignUpForm,UserLoginForm
+from django.shortcuts import redirect, render
+
+from .forms import UserLoginForm, UserSignUpForm
 from .models import User
-from django.contrib.auth.hashers import make_password,check_password
+
 
 def signup(request: HttpRequest):
     if request.method == "POST":
         form = UserSignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.password = make_password(form.cleaned_data['password'])
+            user.password = make_password(form.cleaned_data["password"])
             user.save()
             messages.success(request, "Account created")
             return redirect("/")
@@ -22,25 +24,31 @@ def signup(request: HttpRequest):
 
 
 def login(request: HttpRequest):
-    if request.session.exists('user_id'):
-        return redirect('/home/')
-    if request.method == 'POST':
-        form= UserLoginForm(request.POST)
+    if request.session.exists("user_id"):
+        return redirect("/home/")
+    if request.method == "POST":
+        form = UserLoginForm(request.POST)
         if form.is_valid():
-            user = User.objects.get(email=form.cleaned_data['email'])
-            if user:
-                if check_password(form.cleaned_data['password'],  user.password):
-                    request.session['user_id'] = user.id
-                    return redirect('/home/')
+            user = User.objects.filter(email=form.cleaned_data["email"])
+            if user.exists():
+                user = user.first()
+                if check_password(
+                    form.cleaned_data["password"], user.password
+                ):
+                    request.session["user_id"] = user.id
+                    return redirect("/home/")
+                else:
+                    messages.warning(request, "email/password are incorrect")
+            else:
+                messages.warning(request, "User not found")
     form = UserLoginForm()
-    context={
-        'title': 'Login',
-        'form': form
-    }
-    return render(request, 'login.html',context)
+    context = {"title": "Login", "form": form}
+    return render(request, "login.html", context)
+
 
 def forgot_password(request: HttpRequest):
     pass
+
 
 def home(request):
     return render(request, "home.html", {"title": "Home"})
