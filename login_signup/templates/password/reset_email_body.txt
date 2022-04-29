@@ -1,0 +1,3 @@
+Click here to reset your TODO password:
+
+{{ protocol }}://{{ domain }}{% url 'new_password' uidb64=uid token=token %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %} {% block body %} {% load crispy_forms_tags %}
+<div class="content-section d-flex justify-content-center">
+    Your password have been reset successfully.<br>
+    Click <a href="{% url 'login' %}">here</a> to login with your new password.
+</div>
+
+{% endblock body %}

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "login_signup.apps.LoginSignupConfig",
+    "anymail",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -134,3 +135,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+
+SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
+
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": "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",
+}
