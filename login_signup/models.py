@@ -31,17 +31,3 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.name
-
-
-# class Task(models.Model):
-#     user_id=models.ForeignKey(User, on_delete=models.CASCADE)
-#     name=models.CharField(max_length=40)
-#     description=models.TextField()
-#     deadline=models.DateTimeField()
-#     STATUS=(
-#         ('Completed','Completed'),
-#         ('Not Completed','Not Completed'),
-#     )
-
-#     def __str__(self):
-#         return self.name
