@@ -9,14 +9,10 @@ class Task(models.Model):
     description = models.TextField()
     deadline = models.DateTimeField(null=True)
     STATUS_CHOICES = [
-        ("Not Completed", "Not Completed"),
-        ("Completed", "Completed"),
+        (False, "Not Completed"),
+        (True, "Completed"),
     ]
-    status = models.CharField(
-        max_length=13,
-        choices=STATUS_CHOICES,
-        default="Not Completed",
-    )
+    status = models.BooleanField(choices=STATUS_CHOICES, default=False)
 
     def __str__(self):
         return self.name

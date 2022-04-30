@@ -5,3 +5,7 @@ body {
 input {
     max-width: 20em
 }
+
+input[type=checkbox] {
+    transform: scale(2);
+}

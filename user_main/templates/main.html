@@ -1,9 +1,37 @@
-{% extends "main_base.html" %} {% block body %}
+{% extends "main_base.html" %} {% block body %} {% load static %}
 
 <div class="container content-section d-flex justify-content-center">
     <h2>
         Welcome {{user.name}}
     </h2>
 </div>
+<table class="table table-info table-striped table-hover">
+    <thead>
+        <tr  class="text-center">
+          <th scope="col">Task</th>
+          <th scope="col">Is completed?</th>
+          <th scope="col">update info</th>
+          <th scope="col">delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in user_tasks %}
+        <tr  class="text-center">
+          <td>{{task.name}}</td>
+          <td>
+            <input type="checkbox"
+             id="{{ task.id }}"
+             class="is_completed"
+             {% if task.status %} checked {% endif %}> </td>
+          <td><a href="{% url 'update_task' task.id %}" class="btn btn-group-sm btn-info">Update</a></td>
+          <td><button type="button" id="{{task.id}}" class="btn btn-group-sm btn-info delete_task">Delete</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+  </table>
 <a href="{% url 'new_task' %}" class="btn btn-primary">Add new Task</a>
 {% endblock body %}
+
+{% block customJs %}
+<script src="{% static '/js/main.js' %}"></script>
+{% endblock customJs%}

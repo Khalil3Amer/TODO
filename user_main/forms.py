@@ -25,7 +25,12 @@ class NewTaskForm(forms.ModelForm):
         cleaned_data = super().clean()
         current_datetime = timezone.now()
         deadline = cleaned_data.get("deadline")
+        if deadline is None:
+            self.add_error("deadline", "the deadline cannot be empty")
+            return None
         if current_datetime > deadline:
             self.add_error(
                 "deadline", "the deadline cannot be before this time"
             )
+        cleaned_data["deadline"] = deadline
+        return cleaned_data
