@@ -5,6 +5,7 @@ $('.is_completed').click(function() {
         success: function(response) {
             if (response['valid']) {
                 alert("Task Updated");
+                location.reload();
             }
         },
         error: function(response) {
@@ -19,6 +20,7 @@ $('.delete_task').click(function() {
         success: function(response) {
             if (response['valid']) {
                 alert("Task Deleted");
+                location.reload();
             }
         },
         error: function(response) {
@@ -26,7 +28,3 @@ $('.delete_task').click(function() {
         }
     });
 });
-
-function reload_screen() {
-
-}
