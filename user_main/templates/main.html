@@ -12,6 +12,7 @@
           <th scope="col">Is completed?</th>
           <th scope="col">update info</th>
           <th scope="col">delete</th>
+          <th scope="col">Time left</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,12 @@
              {% if task.status %} checked {% endif %}> </td>
           <td><a href="{% url 'update_task' task.id %}" class="btn btn-group-sm btn-info">Update</a></td>
           <td><button type="button" id="{{task.id}}" class="btn btn-group-sm btn-info delete_task">Delete</button></td>
+          <td><div data-deadline="{{ task.deadline.isoformat }}" class="time-left">
+              <span class="days">days</span>
+              <span class="hours">days</span>
+              <span class="minutes">days</span>
+              <span class="seconds">days</span>
+          </div><td>
         </tr>
         {% endfor %}
       </tbody>
