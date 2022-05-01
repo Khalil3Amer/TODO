@@ -26,7 +26,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to="user_images", null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
     USERNAME_FIELD = "email"
 
     def __str__(self):

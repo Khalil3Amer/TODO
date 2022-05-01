@@ -1,0 +1,45 @@
+{% extends "main_base.html" %} {% block body %} {% load static %}
+
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-12 col-md-12 col-md-10 col-lg-10 col-md-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-4 toppad" >
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{request.user.name}}</h3>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-5 col-lg-3 " align="left">
+                <img alt="User Pic" src="{{ request.user.image.url }}" class="img-circle img-fluid img-thumbnail">
+                <a href="{% url 'new_image' %}" class="btn btn-lg btn-info">Change</a>
+              </div>
+              <div class=" col-md-9 col-lg-9 ">
+                <table class="table table-user-information">
+                  <tbody>
+                    <tr>
+                      <td>Email</td>
+                      <td><a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></td>
+                      <td><a href="{% url 'new_email'%}" class="btn btn-primary">Edit</a></td>
+                    </tr>
+                    <tr>
+                      <td>Account Creation Date:</td>
+                      <td>{{ request.user.creation_date.year}}-{{ request.user.creation_date.month}}-{{ request.user.creation_date.day}}</td>
+                    </tr>
+                    <tr>
+                      <td>Account Last Updated Date:</td>
+                      <td>{{ request.user.last_updated.year}}-{{ request.user.last_updated.month}}-{{ request.user.last_updated.day}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <a href="#" class="btn btn-primary">Change Password</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock body %}
