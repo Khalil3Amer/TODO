@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -142,9 +144,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 
 SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
-
+dotenv_path = BASE_DIR.joinpath(".env")
+load_dotenv()
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
+    "SENDINBLUE_API_KEY": os.getenv("SENDINBLUE_API_KEY"),
 }
 
 AUTHENTICATION_BACKENDS = [
