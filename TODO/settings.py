@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "user_auth.apps.UserAuthConfig",
-    "user_main.apps.UserMainConfig",
+    "user_home.apps.UserHomeConfig",
     "user_profile.apps.UserProfileConfig",
     "anymail",
     "django.contrib.admin",
