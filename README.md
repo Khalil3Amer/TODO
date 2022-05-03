@@ -4,15 +4,21 @@
 
 ### prerequisite
 
-- crispy forms
+- Crispy Forms
 
     ```bash
     pip install django-crispy-forms
     pip install crispy-bootstrap5
     ```
 
-- anymail
+- Anymail
 
     ```bash
     pip install "django-anymail[sendgrid,sparkpost,sendinblue]"
+    ```
+    
+- Pillow
+
+    ```bash
+    pip install pillow
     ```
