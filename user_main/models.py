@@ -1,6 +1,6 @@
 from django.db import models
 
-from login_signup.models import User
+from user_auth.models import User
 
 
 class Task(models.Model):

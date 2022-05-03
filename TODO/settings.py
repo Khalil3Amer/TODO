@@ -38,7 +38,7 @@ ALLOWED_HOSTS: list = []
 INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
-    "login_signup.apps.LoginSignupConfig",
+    "user_auth.apps.UserAuthConfig",
     "user_main.apps.UserMainConfig",
     "user_profile.apps.UserProfileConfig",
     "anymail",
@@ -146,11 +146,12 @@ EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
 dotenv_path = BASE_DIR.joinpath(".env")
 load_dotenv()
+khalil = os.getenv("SENDINBLUE_API_KEY")
 ANYMAIL = {
     "SENDINBLUE_API_KEY": os.getenv("SENDINBLUE_API_KEY"),
 }
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "login_signup.backend.NewBackend",
+    "user_auth.backend.NewBackend",
 ]

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 
-from login_signup.models import User
+from user_auth.models import User
 
 
 class NewEmailForm(forms.Form):
