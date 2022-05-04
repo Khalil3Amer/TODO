@@ -45,22 +45,22 @@ def change_image(request: HttpRequest):
 def change_password(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect("/")
-    if request.method == "POST":
-        form = NewPasswordForm(request.POST)
-        if form.is_valid():
-            if request.user.check_password(form.cleaned_data["old_password"]):
-                request.user.password = form.clean()["password"]
-                request.user.save()
-                messages.success(request, "Password Updated")
-                return redirect("/profile")
-            else:
-                messages.warning(request, "Wrong Password")
+    if request.method == "GET":
+        form = NewPasswordForm()
+        context = {"title": "New Image", "form": form}
+        return render(request, "new_image.html", context)
+    form = NewPasswordForm(request.POST)
+    if form.is_valid():
+        if request.user.check_password(form.cleaned_data["old_password"]):
+            request.user.password = form.clean()["password"]
+            request.user.save()
+            messages.success(request, "Password Updated")
+            return redirect("/profile")
         else:
-            for errorKind, contents in form.errors.as_data().items():
-                msg = errorKind.capitalize() + ": "
-                for content in contents:
-                    msg += content.message + "\n"
-                messages.warning(request, msg)
-    form = NewPasswordForm()
-    context = {"title": "New Image", "form": form}
-    return render(request, "new_image.html", context)
+            messages.warning(request, "Wrong Password")
+    else:
+        for errorKind, contents in form.errors.as_data().items():
+            msg = errorKind.capitalize() + ": "
+            for content in contents:
+                msg += content.message + "\n"
+            messages.warning(request, msg)
