@@ -27,25 +27,26 @@ def signout(request: HttpRequest):
 def new_task(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect("/")
-    if request.method == "GET":
-        form = NewTaskForm()
-        context = {"title": "New Task", "form": form}
-        return render(request, "new_task.html", context)
-    form = NewTaskForm(request.POST)
-    if form.is_valid():
-        task = form.save(commit=False)
-        task.user_id = request.user
-        task.save()
-        messages.success(
-            request,
-            "Task Added",
-        )
-    else:
-        for errorKind, contents in form.errors.as_data().items():
-            msg = errorKind.capitalize() + ":"
-            for content in contents:
-                msg += content.message + "\n"
-            messages.warning(request, msg)
+    if request.method == "POST":
+        form = NewTaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            messages.success(
+                request,
+                "Task Added",
+            )
+            return redirect("/")
+        else:
+            for errorKind, contents in form.errors.as_data().items():
+                msg = errorKind.capitalize() + ":"
+                for content in contents:
+                    msg += content.message + "\n"
+                messages.warning(request, msg)
+    form = NewTaskForm()
+    context = {"title": "New Task", "form": form}
+    return render(request, "new_task.html", context)
 
 
 def update_states(request: HttpRequest, task_id, is_compleated):
