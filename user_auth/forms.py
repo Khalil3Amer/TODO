@@ -1,26 +1,6 @@
 from django import forms
-from django.core.exceptions import ValidationError
 
-from .models import User
-
-
-def password_check(passwd):
-
-    if len(passwd) < 8:
-        raise ValidationError("length should be at least 8")
-
-    if not any(char.isdigit() for char in passwd):
-        raise ValidationError("Password should have at least one numeral")
-
-    if not any(char.isupper() for char in passwd):
-        raise ValidationError(
-            "Password should have at least one uppercase letter"
-        )
-
-    if not any(char.islower() for char in passwd):
-        raise ValidationError(
-            "Password should have at least one lowercase letter"
-        )
+from .models import User, password_check
 
 
 class UserSignUpForm(forms.ModelForm):

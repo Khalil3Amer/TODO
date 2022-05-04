@@ -34,14 +34,7 @@ ALLOWED_HOSTS: list = []
 
 
 # Application definition
-
-INSTALLED_APPS = [
-    "crispy_forms",
-    "crispy_bootstrap5",
-    "user_auth.apps.UserAuthConfig",
-    "user_home.apps.UserHomeConfig",
-    "user_profile.apps.UserProfileConfig",
-    "anymail",
+BUILT_IN_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,6 +42,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+CUSTOM_APPS = [
+    "user_auth.apps.UserAuthConfig",
+    "user_home.apps.UserHomeConfig",
+    "user_profile.apps.UserProfileConfig",
+]
+THIRD_PARTY_APPS = [
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "anymail",
+]
+
+INSTALLED_APPS = BUILT_IN_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

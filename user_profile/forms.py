@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ValidationError
 
-from user_auth.models import User
+from user_auth.models import User, password_check
 
 
 class NewEmailForm(forms.Form):
@@ -16,25 +15,6 @@ class NewImageForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["image"]
-
-
-def password_check(passwd):
-
-    if len(passwd) < 8:
-        raise ValidationError("length should be at least 8")
-
-    if not any(char.isdigit() for char in passwd):
-        raise ValidationError("Password should have at least one numeral")
-
-    if not any(char.isupper() for char in passwd):
-        raise ValidationError(
-            "Password should have at least one uppercase letter"
-        )
-
-    if not any(char.islower() for char in passwd):
-        raise ValidationError(
-            "Password should have at least one lowercase letter"
-        )
 
 
 class NewPasswordForm(forms.Form):
