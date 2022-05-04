@@ -10,6 +10,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 
 from .forms import (
     NewPasswordForm,
@@ -34,7 +35,7 @@ def signup(request: HttpRequest):
         user.save()
         messages.success(
             request,
-            mark_safe("Account Created: <a href='/login'>Login?</a>"),
+            mark_safe(_("Account Created: <a href='/login'>Login?</a>")),
         )
         return redirect("/")
     else:
@@ -61,7 +62,7 @@ def login(request: HttpRequest):
             log_in(request, user)
             return redirect("/main/")
         else:
-            messages.warning(request, "email/password are incorrect")
+            messages.warning(request, _("email/password are incorrect"))
 
 
 def forgot_password(request: HttpRequest):
@@ -96,7 +97,7 @@ def forgot_password(request: HttpRequest):
                     fail_silently=False,
                 )
             except BadHeaderError:
-                return HttpResponse("Invalid header found.")
+                return HttpResponse(_("Invalid header found."))
             return render(
                 request,
                 "password/password_confirm.html",
@@ -105,7 +106,7 @@ def forgot_password(request: HttpRequest):
         else:
             messages.warning(
                 request,
-                mark_safe("Email not found: <a href='/signup'>Signup?</a>"),
+                mark_safe(_("Email not found: <a href='/signup'>Signup?</a>")),
             )
 
 
@@ -118,7 +119,7 @@ def new_password(request: HttpRequest, uidb64, token):
                 user = user.first()
                 user.password = make_password(form.cleaned_data["password"])
                 user.save()
-                return render(request, "password/reset_done.html")
+                return render(request, _("password/reset_done.html"))
         else:
             for errorKind, contents in form.errors.as_data().items():
                 msg = errorKind.capitalize() + ":"
@@ -131,7 +132,7 @@ def new_password(request: HttpRequest, uidb64, token):
         user = user.first()
         if not default_token_generator.check_token(user, token):
             messages.warning(
-                request, "Invalid link please login or signup to continue."
+                request, _("Invalid link please login or signup to continue.")
             )
             return redirect("/")
         form = NewPasswordForm()
@@ -139,7 +140,8 @@ def new_password(request: HttpRequest, uidb64, token):
         return render(request, "password/new_password.html", context)
     else:
         messages.warning(
-            request, mark_safe("Email not found: <a href='/signup'>Signup</a>")
+            request,
+            mark_safe(_("Email not found: <a href='/signup'>Signup</a>")),
         )
         return redirect("/")
 
