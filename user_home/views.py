@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 
 from .forms import NewTaskForm
 from .models import Task
@@ -31,12 +32,13 @@ def new_task(request: HttpRequest):
         form = NewTaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            task.user_id = request.user
+            task.user = request.user
             task.save()
             messages.success(
                 request,
-                "Task Added",
+                _("Task Added"),
             )
+            return redirect("/")
         else:
             for errorKind, contents in form.errors.as_data().items():
                 msg = errorKind.capitalize() + ":"
@@ -79,14 +81,14 @@ def update_task(request: HttpRequest, task_id):
                 task_to_update.save()
                 return redirect("/main")
             except ObjectDoesNotExist:
-                messages.warning(request, "No such task!")
+                messages.warning(request, _("No such task!"))
                 return redirect("/main/new_task/")
     context = None
     try:
         form = NewTaskForm(initial=model_to_dict(Task.objects.get(id=task_id)))
         context = {"title": "Update Task", "form": form}
     except ObjectDoesNotExist:
-        messages.warning(request, "No such task!")
+        messages.warning(request, _("No such task!"))
         return redirect("/main/new_task/")
     return render(request, "update_task.html", context)
 
