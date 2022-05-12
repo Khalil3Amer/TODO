@@ -89,13 +89,6 @@ WSGI_APPLICATION = "TODO.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -151,7 +144,7 @@ EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
 dotenv_path = BASE_DIR.joinpath(".env")
 load_dotenv()
-khalil = os.getenv("SENDINBLUE_API_KEY")
+
 ANYMAIL = {
     "SENDINBLUE_API_KEY": os.getenv("SENDINBLUE_API_KEY"),
 }
@@ -160,3 +153,14 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "user_auth.backend.NewBackend",
 ]
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("PSQL_DATABASE"),
+        "USER": os.getenv("PSQL_USERNAME"),
+        "PASSWORD": os.getenv("PSQL_PASSWORD"),
+        "HOST": os.getenv("PSQL_HOST"),
+        "PORT": os.getenv("PSQL_PORT"),
+    }
+}
