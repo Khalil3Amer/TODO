@@ -11,7 +11,7 @@ from .forms import NewEmailForm, NewImageForm, NewPasswordForm
 def user_info(request: HttpRequest):
     if not request.user.is_authenticated:
         return redirect("/")
-    return render(request, "user_info.html", {"title": "My Profile"})
+    return render(request, "user_info.html")
 
 
 def change_email(request: HttpRequest):
@@ -25,7 +25,7 @@ def change_email(request: HttpRequest):
             messages.success(request, "Email Updated")
             return redirect("/profile")
     form = NewEmailForm()
-    context = {"title": "New Email", "form": form}
+    context = {"form": form}
     return render(request, "new_email.html", context)
 
 
@@ -39,7 +39,7 @@ def change_image(request: HttpRequest):
             messages.success(request, _("Image Updated"))
             return redirect("/profile")
     form = NewImageForm(instance=request.user)
-    context = {"title": "New Image", "form": form}
+    context = {"form": form}
     return render(request, "new_image.html", context)
 
 
@@ -48,7 +48,7 @@ def change_password(request: HttpRequest):
         return redirect("/")
     if request.method == "GET":
         form = NewPasswordForm()
-        context = {"title": "New Image", "form": form}
+        context = {"form": form}
         return render(request, "new_image.html", context)
     form = NewPasswordForm(request.POST)
     if form.is_valid():

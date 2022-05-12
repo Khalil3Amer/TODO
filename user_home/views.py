@@ -17,7 +17,7 @@ def main(request: HttpRequest):
         return redirect("/")
     user = request.user
     tasks = user.task_set.all()
-    return render(request, "main.html", {"title": "Main", "user_tasks": tasks})
+    return render(request, "main.html", {"user_tasks": tasks})
 
 
 def signout(request: HttpRequest):
@@ -44,7 +44,7 @@ def new_task(request: HttpRequest):
         else:
             show_error_msgs(request, form)
     form = NewTaskForm()
-    context = {"title": "New Task", "form": form}
+    context = {"form": form}
     return render(request, "new_task.html", context)
 
 
@@ -84,7 +84,7 @@ def update_task(request: HttpRequest, task_id):
     context = None
     try:
         form = NewTaskForm(initial=model_to_dict(Task.objects.get(id=task_id)))
-        context = {"title": "Update Task", "form": form}
+        context = {"form": form}
     except ObjectDoesNotExist:
         messages.warning(request, _("No such task!"))
         return redirect("/main/new_task/")

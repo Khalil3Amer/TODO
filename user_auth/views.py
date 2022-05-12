@@ -34,7 +34,7 @@ def signup(request: HttpRequest):
         return redirect("/main/")
     if request.method == "GET":
         form = UserSignUpForm()
-        context = {"title": "Sign Up", "form": form}
+        context = {"form": form}
         return render(request, "signup.html", context)
     form = UserSignUpForm(request.POST)
     if form.is_valid():
@@ -55,7 +55,7 @@ def login(request: HttpRequest):
         return redirect("/main/")
     if request.method == "GET":
         form = UserLoginForm()
-        context = {"title": "Login", "form": form}
+        context = {"form": form}
         return render(request, "login.html", context)
     form = UserLoginForm(request.POST)
     if form.is_valid():
@@ -67,6 +67,9 @@ def login(request: HttpRequest):
             return redirect("/main/")
         else:
             messages.warning(request, _("email/password are incorrect"))
+    form = UserLoginForm()
+    context = {"form": form}
+    return render(request, "login.html", context)
 
 
 def forgot_password(request: HttpRequest):
@@ -75,7 +78,7 @@ def forgot_password(request: HttpRequest):
 
     if request.method == "GET":
         form = ResetPasswordForm()
-        context = {"title": "Password reset", "form": form}
+        context = {"form": form}
         return render(request, "password/password_reset.html", context)
 
     form = ResetPasswordForm(request.POST)
@@ -107,7 +110,6 @@ def forgot_password(request: HttpRequest):
             return render(
                 request,
                 "password/password_confirm.html",
-                {"title": "password confirmation"},
             )
         else:
             messages.warning(
@@ -138,7 +140,7 @@ def new_password(request: HttpRequest, uidb64, token):
             )
             return redirect("/")
         form = NewPasswordForm()
-        context = {"title": "Password reset", "form": form}
+        context = {"form": form}
         return render(request, "password/new_password.html", context)
 
     else:
@@ -153,4 +155,4 @@ def home(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect("/main/")
 
-    return render(request, "home.html", {"title": "Home"})
+    return render(request, "home.html")
