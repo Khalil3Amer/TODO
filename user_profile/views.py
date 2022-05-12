@@ -3,9 +3,9 @@ from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
-from .forms import NewEmailForm, NewImageForm, NewPasswordForm
+from user_auth.views import show_error_msgs
 
-# Create your views here.
+from .forms import NewEmailForm, NewImageForm, NewPasswordForm
 
 
 def user_info(request: HttpRequest):
@@ -60,8 +60,4 @@ def change_password(request: HttpRequest):
         else:
             messages.warning(request, _("Wrong Password"))
     else:
-        for errorKind, contents in form.errors.as_data().items():
-            msg = errorKind.capitalize() + ": "
-            for content in contents:
-                msg += content.message + "\n"
-            messages.warning(request, msg)
+        show_error_msgs(request, form)

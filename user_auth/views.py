@@ -21,6 +21,14 @@ from .forms import (
 from .models import User
 
 
+def show_error_msgs(request, form):
+    for errorKind, contents in form.errors.as_data().items():
+        msg = errorKind.capitalize() + ":"
+        for content in contents:
+            msg += content.message + "\n"
+        messages.warning(request, msg)
+
+
 def signup(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect("/main/")
@@ -39,11 +47,7 @@ def signup(request: HttpRequest):
         )
         return redirect("/")
     else:
-        for errorKind, contents in form.errors.as_data().items():
-            msg = errorKind.capitalize() + ":"
-            for content in contents:
-                msg += content.message + "\n"
-            messages.warning(request, msg)
+        show_error_msgs(request, form)
 
 
 def login(request: HttpRequest):
@@ -68,10 +72,12 @@ def login(request: HttpRequest):
 def forgot_password(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect("/main/")
+
     if request.method == "GET":
         form = ResetPasswordForm()
         context = {"title": "Password reset", "form": form}
         return render(request, "password/password_reset.html", context)
+
     form = ResetPasswordForm(request.POST)
     if form.is_valid():
         user = User.objects.filter(email=form.cleaned_data["email"])
@@ -121,11 +127,7 @@ def new_password(request: HttpRequest, uidb64, token):
                 user.save()
                 return render(request, _("password/reset_done.html"))
         else:
-            for errorKind, contents in form.errors.as_data().items():
-                msg = errorKind.capitalize() + ":"
-                for content in contents:
-                    msg += content.message + "\n"
-                messages.warning(request, msg)
+            show_error_msgs(request, form)
 
     user = User.objects.filter(id=urlsafe_base64_decode(uidb64))
     if user.exists():
@@ -138,6 +140,7 @@ def new_password(request: HttpRequest, uidb64, token):
         form = NewPasswordForm()
         context = {"title": "Password reset", "form": form}
         return render(request, "password/new_password.html", context)
+
     else:
         messages.warning(
             request,
@@ -149,4 +152,5 @@ def new_password(request: HttpRequest, uidb64, token):
 def home(request: HttpRequest):
     if request.user.is_authenticated:
         return redirect("/main/")
+
     return render(request, "home.html", {"title": "Home"})

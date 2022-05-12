@@ -6,6 +6,8 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
+from user_auth.views import show_error_msgs
+
 from .forms import NewTaskForm
 from .models import Task
 
@@ -40,11 +42,7 @@ def new_task(request: HttpRequest):
             )
             return redirect("/")
         else:
-            for errorKind, contents in form.errors.as_data().items():
-                msg = errorKind.capitalize() + ":"
-                for content in contents:
-                    msg += content.message + "\n"
-                messages.warning(request, msg)
+            show_error_msgs(request, form)
     form = NewTaskForm()
     context = {"title": "New Task", "form": form}
     return render(request, "new_task.html", context)
