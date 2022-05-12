@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django_softdelete.models import SoftDeleteModel
 
 
 def password_check(passwd):
@@ -21,7 +22,7 @@ def password_check(passwd):
         )
 
 
-class User(AbstractBaseUser):
+class User(SoftDeleteModel, AbstractBaseUser):
     name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
     creation_date = models.DateTimeField(auto_now_add=True)
