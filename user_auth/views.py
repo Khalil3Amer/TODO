@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as log_in
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import BadHeaderError, send_mail
@@ -29,9 +30,24 @@ def show_error_msgs(request, form):
         messages.warning(request, msg)
 
 
+def anonymous_required(function=None, redirect_url=None):
+
+    if not redirect_url:
+        redirect_url = "/main"
+
+    actual_decorator = user_passes_test(
+        lambda u: u.is_anonymous,
+        login_url=redirect_url,
+        redirect_field_name=None,
+    )
+
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+@anonymous_required
 def signup(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
     if request.method == "GET":
         form = UserSignUpForm()
         context = {"form": form}
@@ -50,9 +66,8 @@ def signup(request: HttpRequest):
         show_error_msgs(request, form)
 
 
+@anonymous_required
 def login(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
     if request.method == "GET":
         form = UserLoginForm()
         context = {"form": form}
@@ -72,10 +87,8 @@ def login(request: HttpRequest):
     return render(request, "login.html", context)
 
 
+@anonymous_required
 def forgot_password(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
-
     if request.method == "GET":
         form = ResetPasswordForm()
         context = {"form": form}
@@ -118,6 +131,7 @@ def forgot_password(request: HttpRequest):
             )
 
 
+@anonymous_required
 def new_password(request: HttpRequest, uidb64, token):
     if request.method == "POST":
         form = NewPasswordForm(request.POST)
@@ -151,8 +165,6 @@ def new_password(request: HttpRequest, uidb64, token):
         return redirect("/")
 
 
+@anonymous_required
 def home(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
-
     return render(request, "home.html")
