@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as log_in
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import BadHeaderError, send_mail
@@ -21,12 +22,35 @@ from .forms import (
 from .models import User
 
 
+def show_error_msgs(request, form):
+    for errorKind, contents in form.errors.as_data().items():
+        msg = errorKind.capitalize() + ":"
+        for content in contents:
+            msg += content.message + "\n"
+        messages.warning(request, msg)
+
+
+def anonymous_required(function=None, redirect_url=None):
+
+    if not redirect_url:
+        redirect_url = "/main"
+
+    actual_decorator = user_passes_test(
+        lambda u: u.is_anonymous,
+        login_url=redirect_url,
+        redirect_field_name=None,
+    )
+
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+@anonymous_required
 def signup(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
     if request.method == "GET":
         form = UserSignUpForm()
-        context = {"title": "Sign Up", "form": form}
+        context = {"form": form}
         return render(request, "signup.html", context)
     form = UserSignUpForm(request.POST)
     if form.is_valid():
@@ -39,19 +63,14 @@ def signup(request: HttpRequest):
         )
         return redirect("/")
     else:
-        for errorKind, contents in form.errors.as_data().items():
-            msg = errorKind.capitalize() + ":"
-            for content in contents:
-                msg += content.message + "\n"
-            messages.warning(request, msg)
+        show_error_msgs(request, form)
 
 
+@anonymous_required
 def login(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
     if request.method == "GET":
         form = UserLoginForm()
-        context = {"title": "Login", "form": form}
+        context = {"form": form}
         return render(request, "login.html", context)
     form = UserLoginForm(request.POST)
     if form.is_valid():
@@ -63,15 +82,18 @@ def login(request: HttpRequest):
             return redirect("/main/")
         else:
             messages.warning(request, _("email/password are incorrect"))
+    form = UserLoginForm()
+    context = {"form": form}
+    return render(request, "login.html", context)
 
 
+@anonymous_required
 def forgot_password(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
     if request.method == "GET":
         form = ResetPasswordForm()
-        context = {"title": "Password reset", "form": form}
+        context = {"form": form}
         return render(request, "password/password_reset.html", context)
+
     form = ResetPasswordForm(request.POST)
     if form.is_valid():
         user = User.objects.filter(email=form.cleaned_data["email"])
@@ -101,7 +123,6 @@ def forgot_password(request: HttpRequest):
             return render(
                 request,
                 "password/password_confirm.html",
-                {"title": "password confirmation"},
             )
         else:
             messages.warning(
@@ -110,6 +131,7 @@ def forgot_password(request: HttpRequest):
             )
 
 
+@anonymous_required
 def new_password(request: HttpRequest, uidb64, token):
     if request.method == "POST":
         form = NewPasswordForm(request.POST)
@@ -121,11 +143,7 @@ def new_password(request: HttpRequest, uidb64, token):
                 user.save()
                 return render(request, _("password/reset_done.html"))
         else:
-            for errorKind, contents in form.errors.as_data().items():
-                msg = errorKind.capitalize() + ":"
-                for content in contents:
-                    msg += content.message + "\n"
-                messages.warning(request, msg)
+            show_error_msgs(request, form)
 
     user = User.objects.filter(id=urlsafe_base64_decode(uidb64))
     if user.exists():
@@ -136,8 +154,9 @@ def new_password(request: HttpRequest, uidb64, token):
             )
             return redirect("/")
         form = NewPasswordForm()
-        context = {"title": "Password reset", "form": form}
+        context = {"form": form}
         return render(request, "password/new_password.html", context)
+
     else:
         messages.warning(
             request,
@@ -146,7 +165,6 @@ def new_password(request: HttpRequest, uidb64, token):
         return redirect("/")
 
 
+@anonymous_required
 def home(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect("/main/")
-    return render(request, "home.html", {"title": "Home"})
+    return render(request, "home.html")

@@ -1,9 +1,11 @@
 from django.db import models
+from django_softdelete.models import SoftDeleteModel
+from model_utils.models import TimeStampedModel
 
 from user_auth.models import User
 
 
-class Task(models.Model):
+class Task(SoftDeleteModel, TimeStampedModel, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=40)
     description = models.TextField()

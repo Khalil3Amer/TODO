@@ -1,22 +1,21 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 
+from user_auth.views import show_error_msgs
+
 from .forms import NewEmailForm, NewImageForm, NewPasswordForm
 
-# Create your views here.
 
-
+@login_required(redirect_field_name=None, login_url="/login")
 def user_info(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
-    return render(request, "user_info.html", {"title": "My Profile"})
+    return render(request, "user_info.html")
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_email(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewEmailForm(request.POST)
         if form.is_valid():
@@ -25,13 +24,12 @@ def change_email(request: HttpRequest):
             messages.success(request, "Email Updated")
             return redirect("/profile")
     form = NewEmailForm()
-    context = {"title": "New Email", "form": form}
+    context = {"form": form}
     return render(request, "new_email.html", context)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_image(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewImageForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -39,16 +37,15 @@ def change_image(request: HttpRequest):
             messages.success(request, _("Image Updated"))
             return redirect("/profile")
     form = NewImageForm(instance=request.user)
-    context = {"title": "New Image", "form": form}
+    context = {"form": form}
     return render(request, "new_image.html", context)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_password(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "GET":
         form = NewPasswordForm()
-        context = {"title": "New Image", "form": form}
+        context = {"form": form}
         return render(request, "new_image.html", context)
     form = NewPasswordForm(request.POST)
     if form.is_valid():
@@ -60,8 +57,4 @@ def change_password(request: HttpRequest):
         else:
             messages.warning(request, _("Wrong Password"))
     else:
-        for errorKind, contents in form.errors.as_data().items():
-            msg = errorKind.capitalize() + ": "
-            for content in contents:
-                msg += content.message + "\n"
-            messages.warning(request, msg)
+        show_error_msgs(request, form)

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+from dj_database_url import config
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -89,13 +90,6 @@ WSGI_APPLICATION = "TODO.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -151,7 +145,7 @@ EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 SENDINBLUE_API_URL = "https://api.sendinblue.com/v3/"
 dotenv_path = BASE_DIR.joinpath(".env")
 load_dotenv()
-khalil = os.getenv("SENDINBLUE_API_KEY")
+
 ANYMAIL = {
     "SENDINBLUE_API_KEY": os.getenv("SENDINBLUE_API_KEY"),
 }
@@ -160,3 +154,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "user_auth.backend.NewBackend",
 ]
+
+DATABASES = {}
+DATABASES["default"] = config(conn_max_age=600, ssl_require=True)
+DATABASES["default"] = config(default=os.getenv("DJ_POSTGRES"))
