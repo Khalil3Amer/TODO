@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.http import HttpRequest, JsonResponse
@@ -12,24 +13,21 @@ from .forms import NewTaskForm
 from .models import Task
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def main(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     user = request.user
     tasks = user.task_set.all()
     return render(request, "main.html", {"user_tasks": tasks})
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def signout(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     logout(request)
     return redirect("/")
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def new_task(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewTaskForm(request.POST)
         if form.is_valid():
@@ -48,9 +46,8 @@ def new_task(request: HttpRequest):
     return render(request, "new_task.html", context)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def update_states(request: HttpRequest, task_id, is_compleated):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "GET":
         user = request.user
         try:
@@ -65,9 +62,8 @@ def update_states(request: HttpRequest, task_id, is_compleated):
     return JsonResponse({}, status=400)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def update_task(request: HttpRequest, task_id):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewTaskForm(request.POST)
         if form.is_valid():
@@ -92,8 +88,6 @@ def update_task(request: HttpRequest, task_id):
 
 
 def delete_task(request: HttpRequest, task_id):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "GET":
         user = request.user
         try:

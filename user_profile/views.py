@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
@@ -8,15 +9,13 @@ from user_auth.views import show_error_msgs
 from .forms import NewEmailForm, NewImageForm, NewPasswordForm
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def user_info(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     return render(request, "user_info.html")
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_email(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewEmailForm(request.POST)
         if form.is_valid():
@@ -29,9 +28,8 @@ def change_email(request: HttpRequest):
     return render(request, "new_email.html", context)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_image(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "POST":
         form = NewImageForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -43,9 +41,8 @@ def change_image(request: HttpRequest):
     return render(request, "new_image.html", context)
 
 
+@login_required(redirect_field_name=None, login_url="/login")
 def change_password(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("/")
     if request.method == "GET":
         form = NewPasswordForm()
         context = {"form": form}
