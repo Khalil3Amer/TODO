@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+from dj_database_url import config
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -154,13 +155,6 @@ AUTHENTICATION_BACKENDS = [
     "user_auth.backend.NewBackend",
 ]
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("PSQL_DATABASE"),
-        "USER": os.getenv("PSQL_USERNAME"),
-        "PASSWORD": os.getenv("PSQL_PASSWORD"),
-        "HOST": os.getenv("PSQL_HOST"),
-        "PORT": os.getenv("PSQL_PORT"),
-    }
-}
+DATABASES = {}
+DATABASES["default"] = config(conn_max_age=600, ssl_require=True)
+DATABASES["default"] = config(default=os.getenv("DJ_POSTGRES"))
